@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gift_app/screens/bottombar.dart';
+import 'package:gift_app/screens/admin/admin_bottombar.dart';
 
 void main() { 
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BottomBar(),
+      home: AdminBottomBar(),
     );
   }
 }
