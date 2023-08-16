@@ -1,8 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:gift_app/config/local_storage.dart';
 import 'package:gift_app/screens/auth/login_screen.dart';
 import 'package:gift_app/screens/bottombar.dart';
+import 'package:gift_app/widgets/loader.dart';
+import 'package:gift_app/widgets/toast.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -22,6 +28,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? xfile;
   String image = "";
   bool isPasswordHide = true;
+  void userData() async {
+    showIndiCator(context);
+    if (image.isEmpty) {
+      showToast(message: "Please select profile");
+      return;
+    }
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    try {
+      UserCredential userCredential =
+          await firebaseAuth.createUserWithEmailAndPassword(
+              email: email.text, password: password.text);
+      if (userCredential.user != null) {
+        String url = "";
+        String ext = image.split(".").last;
+        String imgpath =
+            // ignore: prefer_interpolation_to_compose_strings
+            DateTime.now().millisecondsSinceEpoch.toString() + "." + ext;
+        if (!Uri.parse(imgpath).isAbsolute) {
+          Reference reference = FirebaseStorage.instance.ref(imgpath);
+          await reference.putFile(File(image));
+          url = await reference.getDownloadURL();
+        }
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+        await firebaseFirestore
+            .collection("users")
+            .doc(userCredential.user!.uid)
+            .set({
+          "firstName": firstName.text,
+          "lastName": lastName.text,
+          "email": email.text,
+          "mobile": mobile.text,
+          "uid": userCredential.user!.uid,
+          "image": url
+        });
+        await LocalStorage.instance.setBool(LocalStorage.isLogin, true);
+        await LocalStorage.instance.setString(LocalStorage.email, email.text);
+        await LocalStorage.instance
+            .setString(LocalStorage.uid, userCredential.user!.uid);
+        await LocalStorage.instance.setString(LocalStorage.image, url);
+        await LocalStorage.instance.setString(LocalStorage.mobile, mobile.text);
+        await LocalStorage.instance
+            .setString(LocalStorage.lastName, lastName.text);
+        await LocalStorage.instance
+            .setString(LocalStorage.firstName, firstName.text);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const BottomBar()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      showToast(message: "Email is exist..");
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -226,10 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               InkWell(
                 onTap: () {
                   if (globalKey.currentState!.validate()) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const BottomBar()),
-                        (route) => false);
+                    userData();
                   }
                 },
                 child: Container(

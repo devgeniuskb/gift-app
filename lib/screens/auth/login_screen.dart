@@ -1,5 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:gift_app/config/local_storage.dart';
+import 'package:gift_app/screens/admin/admin_bottombar.dart';
 import 'package:gift_app/screens/auth/register_screen.dart';
+import 'package:gift_app/widgets/loader.dart';
+import 'package:gift_app/widgets/toast.dart';
 
 import '../bottombar.dart';
 
@@ -15,6 +22,49 @@ class _LogInScreenState extends State<LogInScreen> {
   TextEditingController password = TextEditingController();
   final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
   bool isPasswordHide = true;
+  void userData() async {
+    showIndiCator(context);
+    try {
+      FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+      UserCredential userCredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+              email: email.text, password: password.text);
+      if (userCredential.user!.uid == "LKOJ3KJrQyMQQ7Ej7STCS0ruTIE2") {
+        await LocalStorage.instance.setBool(LocalStorage.isAdmin, true);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const AdminBottomBar()),
+            (route) => false);
+      } else if (userCredential.user != null) {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+        DocumentSnapshot data = await firebaseFirestore
+            .collection("users")
+            .doc(userCredential.user!.uid)
+            .get();
+        await LocalStorage.instance.setBool(LocalStorage.isLogin, true);
+        await LocalStorage.instance.setString(LocalStorage.email, email.text);
+        await LocalStorage.instance
+            .setString(LocalStorage.uid, userCredential.user!.uid);
+        await LocalStorage.instance
+            .setString(LocalStorage.image, data['image']);
+        await LocalStorage.instance
+            .setString(LocalStorage.mobile, data['mobile']);
+        await LocalStorage.instance
+            .setString(LocalStorage.lastName, data['lastName']);
+        await LocalStorage.instance
+            .setString(LocalStorage.firstName, data['firstName']);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const BottomBar()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      showToast(message: "wrong password...");
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -47,7 +97,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 height: 5,
               ),
               const Center(
-                child:  Text(
+                child: Text(
                   "Gift",
                   style: TextStyle(color: Color(0xFF9c6d9d), fontSize: 30),
                 ),
@@ -130,10 +180,7 @@ class _LogInScreenState extends State<LogInScreen> {
               InkWell(
                 onTap: () {
                   if (globalKey.currentState!.validate()) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const BottomBar()),
-                        (route) => false);
+                    userData();
                   }
                 },
                 child: Container(

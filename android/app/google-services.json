@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "382762610793",
+    "project_id": "gift-app-f795a",
+    "storage_bucket": "gift-app-f795a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382762610793:android:6a0fb87e90a7e76ecc32f8",
+        "android_client_info": {
+          "package_name": "com.example.gift_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382762610793-8gdv2n9m3brevjegll0liv060sgsgqum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW6ydBNf--yGySccE1iOrwPeHoqKdDWFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382762610793-8gdv2n9m3brevjegll0liv060sgsgqum.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
