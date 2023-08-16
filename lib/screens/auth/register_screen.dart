@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gift_app/screens/auth/login_screen.dart';
 import 'package:gift_app/screens/bottombar.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,6 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController password = TextEditingController();
   TextEditingController mobile = TextEditingController();
   final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
+  XFile? xfile;
+  String image = "";
+  bool isPasswordHide = true;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -24,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/bg.jpg"),
+              image: AssetImage("assets/image/bg.jpg"),
               fit: BoxFit.fill,
             ),
           ),
@@ -53,6 +59,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(
                 height: 40,
+              ),
+              InkWell(
+                onTap: () async {
+                  ImagePicker imagePicker = ImagePicker();
+                  xfile =
+                      await imagePicker.pickImage(source: ImageSource.gallery);
+                  image = xfile!.path;
+                  setState(() {});
+                },
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: const Color(0xFF9c6d9d),
+                        radius: 55,
+                        backgroundImage: image == ""
+                            ? Image.asset("assets/icon/profile.png").image
+                            : Image.file(File(image)).image,
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        right: 4,
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                    blurRadius: 1,
+                                    spreadRadius: -1,
+                                    color: Color(0xFF9c6d9d),
+                                    offset: Offset(1, 1)),
+                                BoxShadow(
+                                    blurRadius: 1,
+                                    spreadRadius: -1,
+                                    color: Color(0xFF9c6d9d),
+                                    offset: Offset(-1, -1)),
+                              ],
+                              color: const Color(0xFF9c6d9d),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const Icon(
+                            Icons.edit,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               TextFormField(
                 controller: firstName,
@@ -91,8 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "reqiured..!";
-                  } else if (!RegExp(
-                          r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                  } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
                       .hasMatch(value)) {
                     return "enter valid mobile number..!";
                   }
@@ -140,7 +199,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   }
                 },
+                obscureText: isPasswordHide,
                 decoration: InputDecoration(
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        isPasswordHide = !isPasswordHide;
+                        setState(() {});
+                      },
+                      child: isPasswordHide
+                          ? Image.asset(
+                              "assets/icon/hide.png",
+                              scale: 20,
+                            )
+                          : Image.asset(
+                              "assets/icon/visible.png",
+                              scale: 20,
+                            ),
+                    ),
                     hintText: 'Password',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10))),

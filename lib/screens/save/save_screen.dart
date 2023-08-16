@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CategoryDetails extends StatefulWidget {
-  const CategoryDetails({super.key});
+class SaveScreen extends StatefulWidget {
+  const SaveScreen({super.key});
 
   @override
-  State<CategoryDetails> createState() => _CategoryDetailsState();
+  State<SaveScreen> createState() => _SaveScreenState();
 }
 
-class _CategoryDetailsState extends State<CategoryDetails> {
+class _SaveScreenState extends State<SaveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cake"),
+        title: const Text("Save"),
         backgroundColor: const Color(0xFF9c6d9d),
-          ),
-           bottomNavigationBar: Container(
+      ),
+       bottomNavigationBar: Container(
         height: 50,
         color: const Color(0xFF9c6d9d),
         child: Row(
@@ -145,6 +145,5 @@ class _CategoryDetailsState extends State<CategoryDetails> {
             );
           }),
     );
-
   }
 }

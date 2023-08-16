@@ -1,44 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:gift_app/screens/cart/cart_screen.dart';
+import 'package:gift_app/screens/order/order_screen.dart';
 
-class CategoryDetails extends StatefulWidget {
-  const CategoryDetails({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<CategoryDetails> createState() => _CategoryDetailsState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _CategoryDetailsState extends State<CategoryDetails> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cake"),
+        title: const Text("Home"),
         backgroundColor: const Color(0xFF9c6d9d),
+        actions: <Widget>[
+          const SizedBox(
+            width: 16,
           ),
-           bottomNavigationBar: Container(
-        height: 50,
-        color: const Color(0xFF9c6d9d),
-        child: Row(
-          children: [
-            const SizedBox(
-              width: 16,
-            ),
-            Text(
-              "Items",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            const Spacer(),
-            Text(
-              "2",
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-          ],
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const OrderScreen()));
+            },
+            child: Center(
+                child: Image.asset(
+              "assets/icon/shopping-bag.png",
+              height: 24,
+              color: Colors.white,
+            )),
+          ),
+          const SizedBox(
+            width: 16,
+          )
+        ],
+      ),
+      bottomNavigationBar: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const CartScreen()));
+        },
+        child: Container(
+          height: 50,
+          color: const Color(0xFF9c6d9d),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 16,
+              ),
+              Text(
+                "Items",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              const Spacer(),
+              Text(
+                "2",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+            ],
+          ),
         ),
       ),
-     
       body: ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: 10,
@@ -145,6 +172,5 @@ class _CategoryDetailsState extends State<CategoryDetails> {
             );
           }),
     );
-
   }
 }

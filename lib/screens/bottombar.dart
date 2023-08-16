@@ -2,9 +2,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:gift_app/screens/profile/profile_screen.dart';
 
-import 'category/categoryscreen.dart';
-import 'home/homescreen.dart';
-import 'like/like_screen.dart';
+import 'category/category_screen.dart';
+import 'home/home_screen.dart';
+import 'save/save_screen.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -15,16 +15,16 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   int index = 0;
-  List abc = [
+  List body = [
     const HomeScreen(),
     const Category(),
-    const LikeScreen(),
+    const SaveScreen(),
     const ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: abc[index],
+      body: body[index],
       bottomNavigationBar: CurvedNavigationBar(
           onTap: (value) {
             setState(() {
@@ -33,22 +33,26 @@ class _BottomBarState extends State<BottomBar> {
           },
           backgroundColor: Colors.white,
           color: const Color(0xFF9c6d9d),
-          items: const [
-            Icon(
-              Icons.home,
+          items: [
+            Image.asset(
+              "assets/icon/home.png",
               color: Colors.white,
+              height: 20,
             ),
-            Icon(
-              Icons.category,
+            Image.asset(
+              "assets/icon/category.png",
               color: Colors.white,
+              height: 20,
             ),
-            Icon(
-              Icons.favorite,
+            Image.asset(
+              "assets/icon/bookmark.png",
               color: Colors.white,
+              height: 20,
             ),
-            Icon(
-              Icons.person,
+            Image.asset(
+              "assets/icon/user.png",
               color: Colors.white,
+              height: 20,
             ),
           ]),
     );
