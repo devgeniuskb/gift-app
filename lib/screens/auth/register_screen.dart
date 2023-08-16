@@ -29,11 +29,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String image = "";
   bool isPasswordHide = true;
   void userData() async {
-    showIndiCator(context);
     if (image.isEmpty) {
       showToast(message: "Please select profile");
       return;
     }
+    showIndiCator(context);
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
       UserCredential userCredential =
