@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:gift_app/screens/order/order_screen.dart';
 import 'package:gift_app/screens/profile/profile_screen.dart';
 
 import 'category/category_screen.dart';
-import 'home/home_screen.dart';
 import 'save/save_screen.dart';
 
 class BottomBar extends StatefulWidget {
@@ -16,8 +16,8 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   int index = 0;
   List body = [
-    const HomeScreen(),
     const Category(),
+    const OrderScreen(),
     const SaveScreen(),
     const ProfileScreen(),
   ];
@@ -39,8 +39,8 @@ class _BottomBarState extends State<BottomBar> {
               color: Colors.white,
               height: 20,
             ),
-            Image.asset(
-              "assets/icon/category.png",
+             Image.asset(
+              "assets/icon/shopping-bag.png",
               color: Colors.white,
               height: 20,
             ),

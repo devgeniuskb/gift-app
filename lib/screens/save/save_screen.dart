@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gift_app/config/local_storage.dart';
+import 'package:lottie/lottie.dart';
 
 class SaveScreen extends StatefulWidget {
   const SaveScreen({super.key});
@@ -8,6 +11,30 @@ class SaveScreen extends StatefulWidget {
 }
 
 class _SaveScreenState extends State<SaveScreen> {
+  String userId = "";
+  bool isLoader = false;
+  List data = [];
+  void getData() async {
+    isLoader = true;
+    setState(() {});
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot = await firebaseFirestore
+        .collection("users")
+        .doc(userId)
+        .collection("like")
+        .get();
+    data = querySnapshot.docs;
+    isLoader = false;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    userId = LocalStorage.instance.getString(LocalStorage.uid) ?? "";
+    getData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,10 +42,10 @@ class _SaveScreenState extends State<SaveScreen> {
         title: const Text("Save"),
         backgroundColor: const Color(0xFF9c6d9d),
       ),
-       bottomNavigationBar: Container(
+      bottomNavigationBar: Container(
         height: 50,
         color: const Color(0xFF9c6d9d),
-        child: Row(
+        child: const Row(
           children: [
             const SizedBox(
               width: 16,
@@ -38,112 +65,140 @@ class _SaveScreenState extends State<SaveScreen> {
           ],
         ),
       ),
-     
-      body: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              height: 180,
-              decoration: BoxDecoration(boxShadow: const [
-                BoxShadow(
-                    offset: Offset(2, 2),
-                    color: Colors.black12,
-                    blurRadius: 3,
-                    spreadRadius: 1)
-              ], color: Colors.white, borderRadius: BorderRadius.circular(15)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: SizedBox(
-                        height: 180,
-                        width: 140,
-                        child: Image.network(
-                          "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSHOFW8N1dyvn9ePx8BsZDoYN9Lye6g4Fx00oyiV_jR8-0qiwxYywRR7i7BTYsELLlXbkjjoJYpYP3_cNk3SVrAvlv9-Ks8mQ",
-                          fit: BoxFit.fill,
-                        ),
-                      )),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "Watch",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "890 \u{20B9}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: const Color(0xFF9c6d9d)),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "Free Shipping",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                        height: 35,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                            color: const Color(0xFF9c6d9d),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Center(
-                            child: Text(
-                          "Add To Cart",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        )),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    height: 35,
-                    width: 35,
-                    decoration: BoxDecoration(
-                        color: const Color(0xFF9c6d9d),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/icon/bookmark.png",
-                        color: Colors.white,
-                        height: 20,
-                      ),
-                    ),
-                  )
-                ],
+      body: isLoader == true
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF9c6d9d),
               ),
-            );
-          }),
+            )
+          : data.isEmpty
+              ? Center(child: Lottie.asset("assets/image/no-data-found.json"))
+              : ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      height: 180,
+                      decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                                offset: Offset(2, 2),
+                                color: Colors.black12,
+                                blurRadius: 3,
+                                spreadRadius: 1)
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: SizedBox(
+                                height: 180,
+                                width: 140,
+                                child: Image.network(
+                                  data[index]['image'],
+                                  fit: BoxFit.fill,
+                                ),
+                              )),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Text(
+                                data[index]['name'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "${data[index]['price']} \u{20B9}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Color(0xFF9c6d9d)),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              const Text(
+                                "Free Shipping",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Container(
+                                height: 35,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xFF9c6d9d),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: const Center(
+                                    child: Text(
+                                  "Add To Cart",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                )),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () async {
+                              isLoader = true;
+                              setState(() {});
+                              FirebaseFirestore firebaseFirestore =
+                                  FirebaseFirestore.instance;
+                              await firebaseFirestore
+                                  .collection("users")
+                                  .doc(userId)
+                                  .collection("like")
+                                  .doc(data[index]['likeId'])
+                                  .delete();
+                              isLoader = false;
+                              setState(() {});
+                              getData();
+                            },
+                            child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFF9c6d9d),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Image.asset(
+                                  "assets/icon/bookmark.png",
+                                  color: Colors.white,
+                                  height: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
     );
   }
 }
