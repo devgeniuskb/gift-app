@@ -140,6 +140,24 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                 child: Image.network(
                                   data[index]['data']['image'],
                                   fit: BoxFit.fill,
+                                   loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: const Color(0xFF9c6d9d),
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
                                 ),
                               )),
                           const SizedBox(

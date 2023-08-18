@@ -54,7 +54,9 @@ class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Divider(color: Colors.black,),
+                const Divider(
+                  color: Colors.black,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
@@ -68,8 +70,10 @@ class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8,),
-                 Padding(
+                const SizedBox(
+                  height: 8,
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
@@ -82,7 +86,9 @@ class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8,),
+                const SizedBox(
+                  height: 8,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
@@ -96,8 +102,12 @@ class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8,),
-                const Divider(color: Colors.black,),
+                const SizedBox(
+                  height: 8,
+                ),
+                const Divider(
+                  color: Colors.black,
+                ),
                 ListView.builder(
                     shrinkWrap: true,
                     itemCount: data['items'].length,
@@ -128,6 +138,24 @@ class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
                                   child: Image.network(
                                     data['items'][index]['image'],
                                     fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: const Color(0xFF9c6d9d),
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 )),
                             const SizedBox(
