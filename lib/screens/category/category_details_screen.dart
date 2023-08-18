@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
 import 'package:gift_app/config/local_storage.dart';
+import 'package:gift_app/controller/cart_data.dart';
+import 'package:gift_app/screens/cart/cart_screen.dart';
 import 'package:lottie/lottie.dart';
 
 class CategoryDetails extends StatefulWidget {
@@ -13,6 +17,7 @@ class CategoryDetails extends StatefulWidget {
 }
 
 class _CategoryDetailsState extends State<CategoryDetails> {
+  CartData cartData = Get.put(CartData());
   Future<bool> isLike(String itemId) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     QuerySnapshot querySnapshot = await firebaseFirestore
@@ -64,28 +69,39 @@ class _CategoryDetailsState extends State<CategoryDetails> {
         title: Text(widget.name),
         backgroundColor: const Color(0xFF9c6d9d),
       ),
-      bottomNavigationBar: Container(
-        height: 50,
-        color: const Color(0xFF9c6d9d),
-        child: const Row(
-          children: [
-            const SizedBox(
-              width: 16,
-            ),
-            Text(
-              "Items",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            const Spacer(),
-            Text(
-              "2",
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-          ],
-        ),
+      bottomNavigationBar: Obx(
+        () => cartData.cartList.isEmpty
+            ? const SizedBox()
+            : InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const CartScreen()));
+                },
+                child: Container(
+                  height: 50,
+                  color: const Color(0xFF9c6d9d),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      const Text(
+                        "Items",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      const Spacer(),
+                      Text(
+                        cartData.cartList.length.toString(),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
       body: isLoader == true
           ? const Center(
@@ -164,21 +180,52 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              Container(
-                                height: 35,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                    color: const Color(0xFF9c6d9d),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Center(
-                                    child: Text(
-                                  "Add To Cart",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                )),
+                              InkWell(
+                                onTap: () async {
+                                  if (cartData.cartList.isEmpty) {
+                                    cartData.cartList.add({
+                                      "name": data[index]['data']['name'],
+                                      "itemId": data[index]['data']['id'],
+                                      "image": data[index]['data']['image'],
+                                      "price": data[index]['data']['price'],
+                                      "qty": 1,
+                                    });
+                                  } else {
+                                    for (int i = 0;
+                                        i < cartData.cartList.length;
+                                        i++) {
+                                      if (cartData.cartList[i]['itemId'] ==
+                                          data[index]['data']['id']) {
+                                        return;
+                                      }
+                                    }
+                                    cartData.cartList.add({
+                                      "name": data[index]['data']['name'],
+                                      "itemId": data[index]['data']['id'],
+                                      "image": data[index]['data']['image'],
+                                      "price": data[index]['data']['price'],
+                                      "qty": 1,
+                                    });
+                                  }
+
+                                  print(cartData.cartList);
+                                },
+                                child: Container(
+                                  height: 35,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFF9c6d9d),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                      child: Text(
+                                    "Add To Cart",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  )),
+                                ),
                               ),
                               const SizedBox(
                                 height: 16,

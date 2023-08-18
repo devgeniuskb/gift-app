@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
 import 'package:gift_app/config/local_storage.dart';
+import 'package:gift_app/controller/cart_data.dart';
+import 'package:gift_app/screens/cart/cart_screen.dart';
 import 'package:lottie/lottie.dart';
 
 class SaveScreen extends StatefulWidget {
@@ -11,6 +15,7 @@ class SaveScreen extends StatefulWidget {
 }
 
 class _SaveScreenState extends State<SaveScreen> {
+  CartData cartData = Get.put(CartData());
   String userId = "";
   bool isLoader = false;
   List data = [];
@@ -42,28 +47,39 @@ class _SaveScreenState extends State<SaveScreen> {
         title: const Text("Save"),
         backgroundColor: const Color(0xFF9c6d9d),
       ),
-      bottomNavigationBar: Container(
-        height: 50,
-        color: const Color(0xFF9c6d9d),
-        child: const Row(
-          children: [
-            const SizedBox(
-              width: 16,
-            ),
-            Text(
-              "Items",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            const Spacer(),
-            Text(
-              "2",
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-          ],
-        ),
+      bottomNavigationBar: Obx(
+        () => cartData.cartList.isEmpty
+            ? const SizedBox()
+            : InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const CartScreen()));
+                },
+                child: Container(
+                  height: 50,
+                  color: const Color(0xFF9c6d9d),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      const Text(
+                        "Items",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      const Spacer(),
+                      Text(
+                        cartData.cartList.length.toString(),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
       body: isLoader == true
           ? const Center(
@@ -142,21 +158,52 @@ class _SaveScreenState extends State<SaveScreen> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              Container(
-                                height: 35,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                    color: const Color(0xFF9c6d9d),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Center(
-                                    child: Text(
-                                  "Add To Cart",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                )),
+                              InkWell(
+                                onTap: () async {
+                                  if (cartData.cartList.isEmpty) {
+                                    cartData.cartList.add({
+                                      "name": data[index]['name'],
+                                      "itemId": data[index]['itemId'],
+                                      "image": data[index]['image'],
+                                      "price": data[index]['price'],
+                                      "qty": 1,
+                                    });
+                                  } else {
+                                    for (int i = 0;
+                                        i < cartData.cartList.length;
+                                        i++) {
+                                      if (cartData.cartList[i]['itemId'] ==
+                                          data[index]['itemId']) {
+                                        return;
+                                      }
+                                    }
+                                    cartData.cartList.add({
+                                      "name": data[index]['name'],
+                                      "itemId": data[index]['itemId'],
+                                      "image": data[index]['image'],
+                                      "price": data[index]['price'],
+                                      "qty": 1,
+                                    });
+                                  }
+
+                                  print(cartData.cartList);
+                                },
+                                child: Container(
+                                  height: 35,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFF9c6d9d),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                      child: Text(
+                                    "Add To Cart",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  )),
+                                ),
                               ),
                               const SizedBox(
                                 height: 16,
