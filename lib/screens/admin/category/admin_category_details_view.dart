@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gift_app/screens/admin/add_product.dart';
-import 'package:gift_app/screens/admin/update_product.dart';
+import 'package:gift_app/screens/admin/category/add_product.dart';
+import 'package:gift_app/screens/admin/category/update_product.dart';
 import 'package:lottie/lottie.dart';
 
 class AdminCategoryDetailsView extends StatefulWidget {

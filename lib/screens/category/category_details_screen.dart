@@ -207,8 +207,6 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                                       "qty": 1,
                                     });
                                   }
-
-                                  print(cartData.cartList);
                                 },
                                 child: Container(
                                   height: 35,

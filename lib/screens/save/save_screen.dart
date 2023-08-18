@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 import 'package:gift_app/config/local_storage.dart';
 import 'package:gift_app/controller/cart_data.dart';
 import 'package:gift_app/screens/cart/cart_screen.dart';
@@ -29,6 +28,7 @@ class _SaveScreenState extends State<SaveScreen> {
         .collection("like")
         .get();
     data = querySnapshot.docs;
+    data = data.reversed.toList();
     isLoader = false;
     setState(() {});
   }
@@ -185,8 +185,6 @@ class _SaveScreenState extends State<SaveScreen> {
                                       "qty": 1,
                                     });
                                   }
-
-                                  print(cartData.cartList);
                                 },
                                 child: Container(
                                   height: 35,

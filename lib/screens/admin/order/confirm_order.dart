@@ -1,30 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gift_app/config/local_storage.dart';
-import 'package:gift_app/screens/order/order_details.dart';
+import 'package:gift_app/screens/admin/order/admin_order_details.dart';
 import 'package:lottie/lottie.dart';
 
-class OrderScreen extends StatefulWidget {
-  const OrderScreen({Key? key}) : super(key: key);
+class ConfirmOrder extends StatefulWidget {
+  const ConfirmOrder({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _OrderScreenState createState() => _OrderScreenState();
+  _ConfirmOrderState createState() => _ConfirmOrderState();
 }
 
-class _OrderScreenState extends State<OrderScreen> {
+class _ConfirmOrderState extends State<ConfirmOrder> {
+  bool isLoader = true;
   List data = [];
-  bool isLoader = false;
   void getData() async {
     isLoader = true;
     setState(() {});
-    String userId = LocalStorage.instance.getString(LocalStorage.uid) ?? "";
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     QuerySnapshot querySnapshot =
         await firebaseFirestore.collection("orders").get();
     var res = querySnapshot.docs;
     for (int i = 0; i < res.length; i++) {
-      if (res[i]['uid'] == userId) {
+      if (res[i]['status'] == "confirm") {
         data.add(res[i]);
       }
     }
@@ -38,14 +36,9 @@ class _OrderScreenState extends State<OrderScreen> {
     getData();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Order"),
-        backgroundColor: const Color(0xFF9c6d9d),
-      ),
       body: isLoader == true
           ? const Center(
               child: CircularProgressIndicator(
@@ -60,10 +53,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => OrderDetailsScreen(
-                                  orderId: data[index]['id'],
-                                )));
+                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AdminOrderDetailsScreen(orderId: data[index]['id'])));
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(
@@ -152,5 +142,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     );
                   }),
     );
+ 
   }
 }

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gift_app/config/local_storage.dart';
-import 'package:gift_app/screens/admin/add_category_screen.dart';
-import 'package:gift_app/screens/admin/admin_category_details_view.dart';
-import 'package:gift_app/screens/admin/update_category.dart';
+import 'package:gift_app/screens/admin/category/add_category_screen.dart';
+import 'package:gift_app/screens/admin/category/admin_category_details_view.dart';
+import 'package:gift_app/screens/admin/category/update_category.dart';
 import 'package:gift_app/screens/auth/login_screen.dart';
 import 'package:gift_app/widgets/alert_dialog.dart';
 import 'package:lottie/lottie.dart';

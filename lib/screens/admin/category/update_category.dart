@@ -17,6 +17,7 @@ class UpdateCategory extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _UpdateCategoryState createState() => _UpdateCategoryState();
 }
 

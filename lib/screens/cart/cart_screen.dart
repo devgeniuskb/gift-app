@@ -56,7 +56,8 @@ class _CartScreenState extends State<CartScreen> {
       "status": "pending",
       "items": cartData.cartList,
       "totalItems": cartData.totalItem.value,
-      "totalBill": cartData.totalAmmount.value
+      "totalBill": cartData.totalAmmount.value,
+      "address" : address.text
     });
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(

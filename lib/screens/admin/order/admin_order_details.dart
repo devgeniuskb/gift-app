@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gift_app/screens/bottombar.dart';
+import 'package:gift_app/screens/admin/admin_bottombar.dart';
 
-class OrderDetailsScreen extends StatefulWidget {
+class AdminOrderDetailsScreen extends StatefulWidget {
   final String orderId;
-  const OrderDetailsScreen({Key? key, required this.orderId}) : super(key: key);
+  const AdminOrderDetailsScreen({Key? key, required this.orderId})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
+  _AdminOrderDetailsScreenState createState() =>
+      _AdminOrderDetailsScreenState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  TextEditingController address = TextEditingController();
+class _AdminOrderDetailsScreenState extends State<AdminOrderDetailsScreen> {
+  DateTime? diliveryDate;
   Map data = {};
   bool isLoader = false;
   void getData() async {
@@ -24,7 +26,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     var res = documentSnapshot.data();
     data = (res as Map);
     isLoader = false;
-    address.text = data['address'];
     setState(() {});
   }
 
@@ -50,6 +51,53 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           : ListView(
               physics: const BouncingScrollPhysics(),
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                const Divider(color: Colors.black,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Name : ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text("${data['firstName']} ${data['lastName']}")
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8,),
+                 Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Email : ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(data['email'])
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Mobile Number : ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(data['mobile'])
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8,),
+                const Divider(color: Colors.black,),
                 ListView.builder(
                     shrinkWrap: true,
                     itemCount: data['items'].length,
@@ -132,24 +180,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 const SizedBox(
                   height: 8,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextFormField(
-                    controller: address,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "reqiured..!";
-                      }
-                      return null;
-                    },
-                    maxLength: 300,
-                    maxLines: 5,
-                    enabled: false,
-                    decoration: InputDecoration(
-                        hintText: 'Address',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey)),
+                  child: Text(data['address']),
                 ),
                 const SizedBox(
                   height: 20,
@@ -232,6 +270,137 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       const SizedBox(
                         height: 20,
                       ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          data['status'] == "pending"
+                              ? InkWell(
+                                  onTap: () async {
+                                    diliveryDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2024));
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        border:
+                                            Border.all(color: Colors.black)),
+                                    height: 50,
+                                    child: Center(
+                                      child: diliveryDate == null
+                                          ? const Text("Select Dilivery Date",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ))
+                                          : Text(
+                                              diliveryDate
+                                                  .toString()
+                                                  .substring(0, 11),
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                    ),
+                                  ),
+                                )
+                              : data['status'] == "cancel"
+                                  ? const Text(
+                                      "order cancel",
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  : Text(
+                                      "Dilivery Date : ${data['date'].toString().substring(0, 11)}"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      data['status'] == "pending"
+                          ? InkWell(
+                              onTap: () async {
+                                isLoader = true;
+                                setState(() {});
+                                FirebaseFirestore firebaseFirestore =
+                                    FirebaseFirestore.instance;
+                                await firebaseFirestore
+                                    .collection("orders")
+                                    .doc(widget.orderId)
+                                    .update({
+                                  "status": "confirm",
+                                  "date": diliveryDate.toString()
+                                });
+                                isLoader = false;
+                                setState(() {});
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AdminBottomBar()),
+                                    (route) => false);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xFF9c6d9d),
+                                ),
+                                height: 50,
+                                child: const Center(
+                                  child: Text("Confirm Order",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                              ),
+                            )
+                          : data['status'] == "confirm"
+                              ? InkWell(
+                                  onTap: () async {
+                                    isLoader = true;
+                                    setState(() {});
+                                    FirebaseFirestore firebaseFirestore =
+                                        FirebaseFirestore.instance;
+                                    await firebaseFirestore
+                                        .collection("orders")
+                                        .doc(widget.orderId)
+                                        .update({
+                                      "status": "diliver",
+                                    });
+                                    isLoader = false;
+                                    setState(() {});
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const AdminBottomBar()),
+                                        (route) => false);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: const Color(0xFF9c6d9d),
+                                    ),
+                                    height: 50,
+                                    child: const Center(
+                                      child: Text("Diliver done",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white)),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       data['status'] == "pending"
                           ? InkWell(
                               onTap: () async {
@@ -251,7 +420,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const BottomBar()),
+                                            const AdminBottomBar()),
                                     (route) => false);
                               },
                               child: Container(
@@ -269,45 +438,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 ),
                               ),
                             )
-                          : data['status'] == "cancel"
-                              ? InkWell(
-                                  onTap: () async {
-                                    isLoader = true;
-                                    setState(() {});
-                                    FirebaseFirestore firebaseFirestore =
-                                        FirebaseFirestore.instance;
-                                    await firebaseFirestore
-                                        .collection("orders")
-                                        .doc(widget.orderId)
-                                        .update({
-                                      "status": "pending",
-                                    });
-                                    isLoader = false;
-                                    setState(() {});
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const BottomBar()),
-                                        (route) => false);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      color: const Color(0xFF9c6d9d),
-                                    ),
-                                    height: 50,
-                                    child: const Center(
-                                      child: Text("Reorder Order",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white)),
-                                    ),
-                                  ),
-                                )
-                              : Text(
-                                  "Your order is diliver at ${data['date']}"),
+                          : Container(),
                       const SizedBox(
                         height: 50,
                       )
