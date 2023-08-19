@@ -117,32 +117,37 @@ class _AdminCategoryDetailsViewState extends State<AdminCategoryDetailsView> {
                           const SizedBox(
                             width: 16,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                data[index]['name'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                "${data[index]['price']} \u{20B9}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: Color(0xFF9c6d9d)),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                            ],
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  data[index]['name'],
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  "${data[index]['price']} \u{20B9}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      color: Color(0xFF9c6d9d)),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                              ],
+                            ),
                           ),
                           const Spacer(),
                           InkWell(

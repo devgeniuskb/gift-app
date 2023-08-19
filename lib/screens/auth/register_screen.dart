@@ -80,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       showToast(message: "Email is exist..");
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     }
   }
@@ -104,19 +105,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const Center(
                   child: Text(
-                "Crinsezza",
+                "Giftery",
                 style: TextStyle(
-                  color: Color.fromARGB(255, 44, 22, 14),
+                  color: Color(0xFF9c6d9d),
                   fontSize: 40,
                 ),
               )),
               const SizedBox(
-                height: 5,
+                height: 8,
               ),
               const Center(
                 child: Text(
-                  "Gift",
-                  style: TextStyle(color: Color(0xFF9c6d9d), fontSize: 30),
+                  "Gifts That Delight, Every Time.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
               ),
               const SizedBox(

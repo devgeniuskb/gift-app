@@ -141,90 +141,95 @@ class _SaveScreenState extends State<SaveScreen> {
                           const SizedBox(
                             width: 16,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                data[index]['name'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                "${data[index]['price']} \u{20B9}",
-                                style: const TextStyle(
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  data[index]['name'],
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  "${data[index]['price']} \u{20B9}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      color: Color(0xFF9c6d9d)),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                const Text(
+                                  "Free Shipping",
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
-                                    color: Color(0xFF9c6d9d)),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              const Text(
-                                "Free Shipping",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  if (cartData.cartList.isEmpty) {
-                                    cartData.cartList.add({
-                                      "name": data[index]['name'],
-                                      "itemId": data[index]['itemId'],
-                                      "image": data[index]['image'],
-                                      "price": data[index]['price'],
-                                      "qty": 1,
-                                    });
-                                  } else {
-                                    for (int i = 0;
-                                        i < cartData.cartList.length;
-                                        i++) {
-                                      if (cartData.cartList[i]['itemId'] ==
-                                          data[index]['itemId']) {
-                                        return;
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    if (cartData.cartList.isEmpty) {
+                                      cartData.cartList.add({
+                                        "name": data[index]['name'],
+                                        "itemId": data[index]['itemId'],
+                                        "image": data[index]['image'],
+                                        "price": data[index]['price'],
+                                        "qty": 1,
+                                      });
+                                    } else {
+                                      for (int i = 0;
+                                          i < cartData.cartList.length;
+                                          i++) {
+                                        if (cartData.cartList[i]['itemId'] ==
+                                            data[index]['itemId']) {
+                                          return;
+                                        }
                                       }
+                                      cartData.cartList.add({
+                                        "name": data[index]['name'],
+                                        "itemId": data[index]['itemId'],
+                                        "image": data[index]['image'],
+                                        "price": data[index]['price'],
+                                        "qty": 1,
+                                      });
                                     }
-                                    cartData.cartList.add({
-                                      "name": data[index]['name'],
-                                      "itemId": data[index]['itemId'],
-                                      "image": data[index]['image'],
-                                      "price": data[index]['price'],
-                                      "qty": 1,
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  height: 35,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xFF9c6d9d),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Center(
-                                      child: Text(
-                                    "Add To Cart",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  )),
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFF9c6d9d),
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: const Center(
+                                        child: Text(
+                                      "Add To Cart",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    )),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                            ],
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                              ],
+                            ),
                           ),
                           const Spacer(),
                           InkWell(
