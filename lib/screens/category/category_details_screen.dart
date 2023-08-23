@@ -68,6 +68,7 @@ class _CategoryDetailsState extends State<CategoryDetails> {
       appBar: AppBar(
         title: Text(widget.name),
         backgroundColor: const Color(0xFF9c6d9d),
+        
       ),
       bottomNavigationBar: Obx(
         () => cartData.cartList.isEmpty
