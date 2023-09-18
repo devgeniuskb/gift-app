@@ -4,7 +4,7 @@ import 'package:gift_app/screens/admin/order/admin_order_details.dart';
 import 'package:lottie/lottie.dart';
 
 class DiliverOrder extends StatefulWidget {
-  const DiliverOrder({ Key? key }) : super(key: key);
+  const DiliverOrder({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -12,7 +12,7 @@ class DiliverOrder extends StatefulWidget {
 }
 
 class _DiliverOrderState extends State<DiliverOrder> {
-   bool isLoader = true;
+  bool isLoader = true;
   List data = [];
   void getData() async {
     isLoader = true;
@@ -33,9 +33,12 @@ class _DiliverOrderState extends State<DiliverOrder> {
 
   @override
   void initState() {
-    getData();
+    Future.microtask(() {
+      getData();
+    });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +56,9 @@ class _DiliverOrderState extends State<DiliverOrder> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AdminOrderDetailsScreen(orderId: data[index]['id'])));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AdminOrderDetailsScreen(
+                                orderId: data[index]['id'])));
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(
@@ -142,6 +147,5 @@ class _DiliverOrderState extends State<DiliverOrder> {
                     );
                   }),
     );
-  
   }
 }
